@@ -1,0 +1,14 @@
+{
+    "users": [
+        {
+            "id": "f4d2b5df-c48a-4310-af17-79c6c392ab6e",
+            "name": "roberto",
+            "age": 23
+        },
+        {
+            "id": "5eb605df-c131-4891-9fb3-63464b463d1c",
+            "name": "luiz",
+            "age": 23
+        }
+    ]
+}
