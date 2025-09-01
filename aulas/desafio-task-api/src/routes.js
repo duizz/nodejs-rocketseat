@@ -9,7 +9,7 @@ export const routes = [
     {
     method: 'GET',
     path: buildRoutePath('/tasks'),
-    handler: (req, res) => {
+    handler: async (req, res) => {
 
         const tasks = database.select('tasks')
 
