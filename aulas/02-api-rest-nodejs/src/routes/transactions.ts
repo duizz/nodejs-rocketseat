@@ -1,40 +1,57 @@
 import { db } from "../database.js"
-import type { FastifyInstance } from "fastify"
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import { randomUUID } from 'node:crypto'
-import { string, z } from 'zod'
+import { z } from 'zod'
+import { checkSessionIdExists } from "../middlewares/check-session-id-exists.js"
 
-export async function transactionsRoutes (app: FastifyInstance) {
+export async function transactionsRoutes(app: FastifyInstance) {
 
-    app.get("/", async () => { 
-
-        const transactions = await db('transactions')
-            .select()
-
-        return { transactions }
+    app.addHook('preHandler', async (request) => {
+        console.log(`${[request.method]} ${request.url}`)
+        checkSessionIdExists
     })
+
+    app.get("/",async (req) => {
+
+            const { sessionId } = req.cookies
+
+            const transactions = await db('transactions')
+                .where('session_id', sessionId)
+                .select()
+
+            return { transactions }
+        })
 
     app.get("/:id", async (req) => {
         const transactionParamSchema = z.object({
             id: z.string()
         })
 
+        const { sessionId } = req.cookies
+
         const { id } = transactionParamSchema.parse(req.params)
 
         const transaction = await db('transactions')
-            .where('id', id)
+            .where({
+                id,
+                session_id: sessionId
+            })
             .first()
 
         return { transaction }
     })
 
-    app.get("/summary", async () => {
+    app.get("/summary", async (req) => {
+        const { sessionId } = req.cookies
+
         const summary = await db('transactions')
+            .where('session_id', sessionId)
             .sum('amount', { as: "amount" })
             .first()
 
         return { summary }
     })
-    
+
 
     app.post("/", async (req, reply) => {
 
@@ -45,11 +62,23 @@ export async function transactionsRoutes (app: FastifyInstance) {
         })
         const { title, amount, type } = transactionBodySchema.parse(req.body)
 
+        let sessionId = req.cookies.sessionId
+
+        if (!sessionId) {
+            sessionId = randomUUID()
+
+            reply.cookie('sessionId', sessionId, {
+                path: '/',
+                maxAge: 60 * 60 * 24 * 7 // 7 days
+            })
+        }
+
         await db('transactions')
             .insert({
                 id: randomUUID(),
                 title,
                 amount: type === 'credit' ? amount : amount * -1,
+                session_id: sessionId
             })
 
         return reply.status(201).send()
