@@ -1,6 +1,14 @@
+#Dependencias
 node_modules
+
+#Database
 db/app.db
 db/test.db
+
+#Environment && Cache 
 .env
 .DS_Store
 .env.test
+
+#Build
+dist
