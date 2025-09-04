@@ -1,5 +1,5 @@
 import { db } from "../database.js"
-import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import { type FastifyInstance } from "fastify"
 import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import { checkSessionIdExists } from "../middlewares/check-session-id-exists.js"
