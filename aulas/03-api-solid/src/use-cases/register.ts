@@ -1,35 +1,29 @@
-import { prisma } from "@/lib/prisma"
-import { hash } from "argon2"
+import { hash } from 'argon2'
+import { UsersRepository } from '@/repositories/users-repository'
+import { UserAlreadyEmailExistsError } from './errors/user-already-email-exists-error'
 
 interface RegisterUseCaseRequest {
-    name: string,
-    email: string,
-    password: string
+  name: string
+  email: string
+  password: string
 }
 
-export async function registerUseCase({
-    name,
-    email,
-    password
-}: RegisterUseCaseRequest) {
+export class RegisterUseCase {
+  constructor(private usersRepository: UsersRepository) {}
 
-    const userWithSameEmail = await prisma.user.findUnique({
-            where: {
-                email,
-            }
-        })
-    
-        if(userWithSameEmail) {
-            throw new Error('E-mail already exists.')
-        }
-    
-        const password_hash = await hash(password)
-    
-        await prisma.user.create({
-            data: {
-                name,
-                email,
-                password_hash
-            }
-        })
+  async execute({ name, email, password }: RegisterUseCaseRequest) {
+    const userWithSameEmail = await this.usersRepository.findByEmail(email)
+
+    if (userWithSameEmail) {
+      throw new UserAlreadyEmailExistsError()
+    }
+
+    const password_hash = await hash(password)
+
+    await this.usersRepository.create({
+      name,
+      email,
+      password_hash,
+    })
+  }
 }
