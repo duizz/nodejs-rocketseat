@@ -1,6 +1,7 @@
 import { hash } from 'argon2'
 import { UsersRepository } from '@/repositories/users-repository'
 import { UserAlreadyEmailExistsError } from './errors/user-already-email-exists-error'
+import { User } from '@prisma/client'
 
 interface RegisterUseCaseRequest {
   name: string
@@ -8,10 +9,18 @@ interface RegisterUseCaseRequest {
   password: string
 }
 
+interface RegisterUserResponse {
+  user: User
+}
+
 export class RegisterUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
-  async execute({ name, email, password }: RegisterUseCaseRequest) {
+  async execute({
+    name,
+    email,
+    password,
+  }: RegisterUseCaseRequest): Promise<RegisterUserResponse> {
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
     if (userWithSameEmail) {
@@ -20,10 +29,12 @@ export class RegisterUseCase {
 
     const password_hash = await hash(password)
 
-    await this.usersRepository.create({
+    const user = await this.usersRepository.create({
       name,
       email,
       password_hash,
     })
+
+    return { user }
   }
 }
