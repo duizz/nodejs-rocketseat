@@ -1,0 +1,53 @@
+import { expect, it, describe, beforeEach } from 'vitest'
+import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
+import { AuthenticateUseCase } from './authenticate'
+import { hash } from 'argon2'
+import { InvalidCredentialError } from './errors/invalid-credentials-user'
+
+let inMemoryUsersRepository: InMemoryUsersRepository
+let sut: AuthenticateUseCase
+
+describe('Authenticate Use Case', () => {
+  beforeEach(() => {
+    inMemoryUsersRepository = new InMemoryUsersRepository()
+    sut = new AuthenticateUseCase(inMemoryUsersRepository)
+  })
+  it('should be able to authenticate', async () => {
+    await inMemoryUsersRepository.create({
+      name: 'John Doe',
+      email: 'johndoe3@gmail.com',
+      password_hash: await hash('123456'),
+    })
+
+    const { user } = await sut.execute({
+      email: 'johndoe3@gmail.com',
+      password: '123456',
+    })
+
+    expect(user.id).toEqual(expect.any(String))
+  })
+
+  it('should not be able to authenticate with wrong email', async () => {
+    await expect(() =>
+      sut.execute({
+        email: 'johndoe3@gmail.com',
+        password: '123456',
+      }),
+    ).rejects.toBeInstanceOf(InvalidCredentialError)
+  })
+
+  it('should not be able to authenticate with wrong password', async () => {
+    await inMemoryUsersRepository.create({
+      name: 'John Doe',
+      email: 'johndoe3@gmail.com',
+      password_hash: await hash('123456'),
+    })
+
+    await expect(() =>
+      sut.execute({
+        email: 'johndoe3@gmail.com',
+        password: '12345',
+      }),
+    ).rejects.toBeInstanceOf(InvalidCredentialError)
+  })
+})
