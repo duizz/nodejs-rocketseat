@@ -6,6 +6,12 @@ import dayjs from 'dayjs'
 export class InMemoryCheckInsRepository implements CheckInRepository {
   public items: CheckIn[] = []
 
+  async findManyUser(userId: string, page: number) {
+    return this.items
+      .filter((index) => index.user_id === userId)
+      .slice((page - 1) * 20, page * 20)
+  }
+
   async findUserOnSameDay(userId: string, date: Date) {
     const startOnDate = dayjs(date).startOf('date')
     const endOnDate = dayjs(date).endOf('date')
