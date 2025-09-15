@@ -19,8 +19,8 @@ describe('Check In Use Case', () => {
     await gymRepository.create({
       id: 'gym-id-1',
       description: 'smart fit',
-      latitude: -18.91233674600398,
-      longitude: -48.316339712663456,
+      latitude: 0,
+      longitude: 0,
       phone: '',
       title: 'academia 1',
     })
@@ -36,8 +36,8 @@ describe('Check In Use Case', () => {
     const { checkIn } = await sut.execute({
       userId: 'user-id-1',
       gymId: 'gym-id-1',
-      userLatitude: -18.91233674600398,
-      userLongitude: -48.316339712663456,
+      userLatitude: 0,
+      userLongitude: 0,
     })
 
     expect(checkIn.id).toEqual(expect.any(String))
@@ -49,16 +49,16 @@ describe('Check In Use Case', () => {
     await sut.execute({
       userId: 'user-id-1',
       gymId: 'gym-id-1',
-      userLatitude: -18.91233674600398,
-      userLongitude: -48.316339712663456,
+      userLatitude: 0,
+      userLongitude: 0,
     })
 
     await expect(() =>
       sut.execute({
         userId: 'user-id-1',
         gymId: 'gym-id-1',
-        userLatitude: -18.91233674600398,
-        userLongitude: -48.316339712663456,
+        userLatitude: 0,
+        userLongitude: 0,
       }),
     ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError)
   })
@@ -69,8 +69,8 @@ describe('Check In Use Case', () => {
     await sut.execute({
       userId: 'user-id-1',
       gymId: 'gym-id-1',
-      userLatitude: -18.91233674600398,
-      userLongitude: -48.316339712663456,
+      userLatitude: 0,
+      userLongitude: 0,
     })
 
     vi.setSystemTime(new Date(2025, 8, 14, 0, 0))
@@ -78,8 +78,8 @@ describe('Check In Use Case', () => {
     const { checkIn } = await sut.execute({
       userId: 'user-id-1',
       gymId: 'gym-id-1',
-      userLatitude: -18.91233674600398,
-      userLongitude: -48.316339712663456,
+      userLatitude: 0,
+      userLongitude: 0,
     })
 
     expect(checkIn.id).toEqual(expect.any(String))
@@ -91,16 +91,16 @@ describe('Check In Use Case', () => {
       title: 'smart fit',
       description: '',
       phone: '',
-      latitude: new Decimal(-18.91233674600398),
-      longitude: new Decimal(-48.316339712663456),
+      latitude: new Decimal(0),
+      longitude: new Decimal(0),
     })
 
     await expect(() =>
       sut.execute({
         userId: 'user-id-1',
         gymId: 'gym-02',
-        userLatitude: -18.930406428741527,
-        userLongitude: -48.30729555831068,
+        userLatitude: 1,
+        userLongitude: 1,
       }),
     ).rejects.toBeInstanceOf(MaxDistanceError)
   })

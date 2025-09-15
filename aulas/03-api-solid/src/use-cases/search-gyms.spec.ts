@@ -16,16 +16,16 @@ describe('Get Gyms Use Case', () => {
       title: 'java script gym',
       description: '',
       phone: '',
-      latitude: -18.91233674600398,
-      longitude: -48.316339712663456,
+      latitude: 0,
+      longitude: 0,
     })
     await gymsRepository.create({
       id: `gym-02`,
       title: 'react gym',
       description: '',
       phone: '',
-      latitude: -18.91233674600398,
-      longitude: -48.316339712663456,
+      latitude: 0,
+      longitude: 0,
     })
 
     const { gym } = await sut.execute({ search: 'java script', page: 1 })
@@ -40,8 +40,8 @@ describe('Get Gyms Use Case', () => {
         title: `react gym ${i}`,
         description: '',
         phone: '',
-        latitude: -18.91233674600398,
-        longitude: -48.316339712663456,
+        latitude: 0,
+        longitude: 0,
       })
     }
 

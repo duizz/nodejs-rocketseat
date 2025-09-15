@@ -15,8 +15,8 @@ describe('Create Gym Use Case', () => {
       title: 'smart fit',
       description: '',
       phone: '',
-      latitude: -18.91233674600398,
-      longitude: -48.316339712663456,
+      latitude: 0,
+      longitude: 0,
     })
 
     expect(gym.id).toEqual(expect.any(String))

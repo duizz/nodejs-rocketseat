@@ -15,21 +15,21 @@ describe('Search Nearby Gyms Use Case', () => {
       title: 'Near Gym',
       description: '',
       phone: '',
-      latitude: -18.91233674600398,
-      longitude: -48.316339712663456,
+      latitude: 0,
+      longitude: 0,
     })
 
     await gymsRepository.create({
       title: 'Far Gym',
       description: '',
       phone: '',
-      latitude: -18.631007710348555,
-      longitude: -48.203147815693804,
+      latitude: 1,
+      longitude: 1,
     })
 
     const { nearGym } = await sut.execute({
-      userLatitude: -18.91233674600398,
-      userLongitude: -48.316339712663456,
+      userLatitude: 0,
+      userLongitude: 0,
     })
 
     expect(nearGym).toHaveLength(1)

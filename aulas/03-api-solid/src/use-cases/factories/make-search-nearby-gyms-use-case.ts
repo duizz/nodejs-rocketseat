@@ -1,4 +1,3 @@
-import { GetGymsUseCase } from '../search-gyms'
 import { PrismaGymsRepository } from '@/repositories/prisma/prisma-gyms-repository'
 import { SearchNearbyGymsUseCase } from '../search-nearby-gyms'
 
