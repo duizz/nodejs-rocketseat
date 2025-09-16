@@ -10,7 +10,7 @@ export async function createAuthenticateUser(
   await prisma.user.create({
     data: {
       name: 'John Doe',
-      email: 'ohndoe@example.com',
+      email: 'johndoe@example.com',
       password_hash: await hash('1234567'),
       role: isAdmin ? 'ADMIN' : 'MEMBER',
     },
