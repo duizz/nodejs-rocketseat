@@ -1,0 +1,11 @@
+import { AnswerRepository } from "@/domain/forum/application/repositories/answer-repository";
+import { Answer } from "@/domain/forum/enterprise/entities/answser";
+
+export class InMemoryAnswerRepository implements AnswerRepository {
+    public items: Answer[] = []
+
+    async create(answer: Answer) {
+        this.items.push(answer)
+    }
+
+}
